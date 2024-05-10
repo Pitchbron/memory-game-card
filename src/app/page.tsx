@@ -2,14 +2,23 @@
 
 import { useEffect, useRef, useState } from 'react'
 import Card from '../component/card/Card'
+import mockGlobalScore from '../api/mockGlobalScore'
 
 interface ClearCardsPorps {
   [key: number]: boolean
 }
 
-const NUMBER = [3, 4, 5, 6]
+const NUMBER = [1, 2, 3, 4, 5, 6]
 
 const Home = () => {
+  const [globalScore, setGlobalScore] = useState<number | undefined>(undefined)
+  const uu = async () => {
+    const eiei = await mockGlobalScore().then((res) => {
+      setGlobalScore(res?.score)
+    })
+    return eiei
+  }
+
   //--------------rearrange card-----------------
   const shuffleCards = (array: number[]) => {
     const shuffled = [...array, ...array].sort(() => Math.random() - 0.5)
@@ -100,27 +109,46 @@ const Home = () => {
 
   return (
     <div className='App'>
-      <div>
-        <h3>Play the Flip card game</h3>
-        <div>Select two cards with same content consequtively to make them vanish</div>
+      <div className='grid justify-items-center'>
+        <div className='my-8'>
+          <div className='bg-gradient-to-r from-pink-600 from-10% via-red-500 via-20% to-black inline-block to-50% text-transparent bg-clip-text font-bold text-5xl py-3'>
+            BALLYPUFF GAY : the Flip card game
+          </div>
+          <div className='flex justify-between items-center'>
+            <div>
+              <div className='text-xl'>
+                Select two cards with same content consequtively to make them vanish.
+              </div>
+              <div className='font-bold text-xl'>Move Count : {moves}</div>
+            </div>
+
+            <button
+              className='rounded-full w-36 h-10 bg-pink-500 hover:bg-pink-600 active:bg-pink-700 focus:outline-none focus:ring focus:ring-violet-300 text-white'
+              onClick={handleRestart}
+            >
+              Restart
+            </button>
+          </div>
+        </div>
       </div>
-      <div className='flex space-x-1'>
-        {cards.map((card, index) => {
-          return (
-            <Card
-              key={index}
-              card={card}
-              index={index}
-              isDisabled={shouldDisableAllCards}
-              isFlipped={checkIsFlipped(index)}
-              isInactive={checkIsInactive(card)}
-              onClick={handleCardClick}
-            />
-          )
-        })}
-      </div>
-      <div className='h-10 w-16 bg-green-600' onClick={handleRestart}>
-        Restart
+      <div className='p-2 mx-64 shadow-lg shadow-red-950 rounded-lg bg-white'>
+        <div className='p-2 rounded-lg border-pink-500 border-8'>
+          <div className='grid gap-x-4 gap-y-4 grid-cols-4 justify-items-center m-10'>
+            {cards.map((card, index) => {
+              return (
+                <Card
+                  key={index}
+                  card={card}
+                  index={index}
+                  isDisabled={shouldDisableAllCards}
+                  isFlipped={checkIsFlipped(index)}
+                  isInactive={checkIsInactive(card)}
+                  onClick={handleCardClick}
+                />
+              )
+            })}
+          </div>
+        </div>
       </div>
 
       <div

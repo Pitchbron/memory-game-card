@@ -18,6 +18,9 @@ const rotateY = plugin(({ addUtilities }) => {
 module.exports = {
   content: ['./src/**/*.{js,ts,jsx,tsx}'],
   theme: {
+    screens: {
+      sm: '640px',
+    },
     extend: {},
   },
   plugins: [rotateY],
