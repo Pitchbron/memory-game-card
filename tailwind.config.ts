@@ -19,7 +19,8 @@ module.exports = {
   content: ['./src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     screens: {
-      sm: '640px',
+      sm: { max: '450px' },
+      lg: { max: '940px' },
     },
     extend: {},
   },

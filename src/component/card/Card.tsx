@@ -25,10 +25,10 @@ const Card = ({ onClick, card, index, isInactive, isFlipped, isDisabled }: Props
       } ${isInactive && 'opacity-0 disable'}`}
       onClick={!isInactive ? handleClick : undefined}
     >
-      <div className={`absolute w-24 h-36 backface-hidden`}>
-        <Image src={Blossom3} alt='eggplant' fill />
+      <div className={'absolute w-24 h-36 backface-hidden'}>
+        <Image src={Blossom3} alt='eggplant' sizes='(min-width: 768px) 100vw, 50vw, 33vw' />
       </div>
-      <div className={`absolute w-24 h-36 rotate-y-180 backface-hidden bg-pink-600`}>
+      <div className={'absolute w-24 h-36 rotate-y-180 backface-hidden bg-pink-600'}>
         <div
           className={
             'absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 font-bold text-5xl text-white'

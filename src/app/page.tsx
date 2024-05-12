@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import Card from '../component/card/Card'
 import mockGlobalScore from '../api/mockGlobalScore'
+import Modal from '../component/modal/Modal'
 
 interface ClearCardsPorps {
   [key: number]: boolean
@@ -11,13 +12,16 @@ interface ClearCardsPorps {
 const NUMBER = [1, 2, 3, 4, 5, 6]
 
 const Home = () => {
+  //--------------fetch API-----------------
   const [globalScore, setGlobalScore] = useState<number | undefined>(undefined)
   const uu = async () => {
-    const eiei = await mockGlobalScore().then((res) => {
-      setGlobalScore(res?.score)
+    return await mockGlobalScore().then((res) => {
+      setGlobalScore(res?.data.score)
     })
-    return eiei
   }
+  useEffect(() => {
+    uu()
+  }, [])
 
   //--------------rearrange card-----------------
   const shuffleCards = (array: number[]) => {
@@ -31,7 +35,9 @@ const Home = () => {
   const [shouldDisableAllCards, setShouldDisableAllCards] = useState(false)
   const [moves, setMoves] = useState(0)
   const [showModal, setShowModal] = useState(false)
-  const [bestScore, setBestScore] = useState(20)
+  const [bestScore, setBestScore] = useState(
+    window?.localStorage?.getItem('bestScore') || Number.POSITIVE_INFINITY
+  )
 
   const timeout = useRef<ReturnType<typeof setInterval> | any>(null)
 
@@ -56,9 +62,9 @@ const Home = () => {
   }
 
   const handleCardClick = (index: number) => {
+    setMoves((moves) => moves + 1)
     if (openCards.length === 1) {
       setOpenCards((prev) => [...prev, index])
-      setMoves((moves) => moves + 1)
       disable()
     } else {
       clearTimeout(timeout.current)
@@ -88,8 +94,9 @@ const Home = () => {
   const checkCompletion = () => {
     if (Object.keys(clearedCards).length === NUMBER.length) {
       setShowModal(true)
-      const highScore = Math.min(moves, bestScore)
+      const highScore = Math.min(moves, +bestScore)
       setBestScore(highScore)
+      localStorage.setItem('bestScore', `${highScore}`)
     }
   }
 
@@ -103,27 +110,41 @@ const Home = () => {
     setShowModal(false)
     setMoves(0)
     setShouldDisableAllCards(false)
-    // set a shuffled deck of cards
     setCards(shuffleCards(NUMBER))
   }
 
   return (
     <div className='App'>
       <div className='grid justify-items-center'>
-        <div className='my-8'>
-          <div className='bg-gradient-to-r from-pink-600 from-10% via-red-500 via-20% to-black inline-block to-50% text-transparent bg-clip-text font-bold text-5xl py-3'>
-            BALLYPUFF GAY : the Flip card game
+        <div className='mt-8 mb-4 mx-10'>
+          <div className='flex lg:block'>
+            <div className='bg-gradient-to-r from-pink-600 from-30% via-red-500 via-70% to-black inline-block to-90% text-transparent bg-clip-text font-bold text-5xl sm:text-3xl py-3 lg:pb-0 sm:pb-0'>
+              {'BALLYPUFF GIRL\xa0'}
+            </div>
+            <div className='font-bold text-5xl sm:text-3xl py-3 sm:pt-0'>
+              {': the Flip card game'}
+            </div>
           </div>
           <div className='flex justify-between items-center'>
             <div>
-              <div className='text-xl'>
+              <div className='text-xl mb-1 sm:text-base'>
                 Select two cards with same content consequtively to make them vanish.
               </div>
-              <div className='font-bold text-xl'>Move Count : {moves}</div>
+              <div className='flex divide-x-2 divide-pink-700 sm:block sm:divide-x-0 sm:p-4 sm:bg-white sm:mt-3'>
+                <div className='font-bold text-xl pr-4 sm:pr-0 sm:text-lg'>
+                  Move Count : {moves}
+                </div>
+                <div className='font-bold text-xl text-violet-600 px-4 sm:px-0 sm:text-lg'>
+                  Your Best Score : {bestScore === Infinity ? ' - ' : bestScore}
+                </div>
+                <div className='font-bold text-xl text-blue-600 px-4 sm:px-0 sm:text-lg'>
+                  Global Score : {globalScore}
+                </div>
+              </div>
             </div>
 
             <button
-              className='rounded-full w-36 h-10 bg-pink-500 hover:bg-pink-600 active:bg-pink-700 focus:outline-none focus:ring focus:ring-violet-300 text-white'
+              className='rounded-full w-36 h-10 bg-pink-500 hover:bg-pink-600 active:bg-pink-700 focus:outline-none focus:ring focus:ring-violet-300 text-white sm:h-20 sm:w-20 sm:absolute sm:translate-x-52 sm:translate-y-8'
               onClick={handleRestart}
             >
               Restart
@@ -131,55 +152,36 @@ const Home = () => {
           </div>
         </div>
       </div>
-      <div className='p-2 mx-64 shadow-lg shadow-red-950 rounded-lg bg-white'>
-        <div className='p-2 rounded-lg border-pink-500 border-8'>
-          <div className='grid gap-x-4 gap-y-4 grid-cols-4 justify-items-center m-10'>
-            {cards.map((card, index) => {
-              return (
-                <Card
-                  key={index}
-                  card={card}
-                  index={index}
-                  isDisabled={shouldDisableAllCards}
-                  isFlipped={checkIsFlipped(index)}
-                  isInactive={checkIsInactive(card)}
-                  onClick={handleCardClick}
-                />
-              )
-            })}
-          </div>
-        </div>
-      </div>
-
-      <div
-        className={`fixed left-1/2 top-1/2 z-50 m-auto h-full w-full max-w-3xl -translate-x-1/2 -translate-y-1/2 bg-black/80 backdrop-blur-[2px] ${
-          showModal ? 'block' : 'hidden'
-        }`}
-        onClick={handleRestart}
-      >
-        <div
-          className={'absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex'}
-          onClick={(event) => event.stopPropagation()}
-        >
-          <div className='w-[327px] rounded-xl border border-s20 bg-sb60 px-md py-lg text-center'>
-            <div className='mb-lg gap-sm flex-col flex'>
-              <div className='text-headline1 font-semibold text-s20'>
-                Hurray!!! You completed the challenge
-              </div>
-              <div className='whitespace-break-spaces text-body2 font-medium text-sl50'>
-                You completed the game in {moves} moves. Your best score is {bestScore} moves.
-              </div>
+      <div className='absolute w-full h-48 bg-sky-200 translate-y-32' />
+      <div className='absolute w-full h-48 bg-emerald-200 translate-y-48' />
+      <div className='absolute w-full h-48 bg-pink-600 translate-y-40' />
+      <div className='absolute grid justify-items-center left-1/2 transform -translate-x-1/2'>
+        <div className='p-2 shadow-lg shadow-red-950 rounded-lg bg-white mx-10 sm:mx-0'>
+          <div className='p-2 rounded-lg border-pink-500 border-8 px-10 sm:px-3'>
+            <div className='grid gap-x-28 gap-y-4 grid-cols-4 sm:grid-cols-3 justify-items-center m-10'>
+              {cards.map((card, index) => {
+                return (
+                  <Card
+                    key={index}
+                    card={card}
+                    index={index}
+                    isDisabled={shouldDisableAllCards}
+                    isFlipped={checkIsFlipped(index)}
+                    isInactive={checkIsInactive(card)}
+                    onClick={handleCardClick}
+                  />
+                )
+              })}
             </div>
-            <button
-              className='w-[20%] flex-row items-center justify-center rounded-full border px-md font-sukhumvit gap-sm flex'
-              onClick={handleRestart}
-              type='button'
-            >
-              Restart
-            </button>
           </div>
         </div>
       </div>
+      <Modal
+        showModal={showModal}
+        handleRestart={handleRestart}
+        moves={moves}
+        bestScore={bestScore}
+      />
     </div>
   )
 }
