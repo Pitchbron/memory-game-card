@@ -39,6 +39,10 @@ const Home = () => {
     window?.localStorage?.getItem('bestScore') || Number.POSITIVE_INFINITY
   )
 
+  if (window !== undefined) {
+    window.localStorage.setItem('bestScore', `${Number.POSITIVE_INFINITY}`)
+  }
+
   const timeout = useRef<ReturnType<typeof setInterval> | any>(null)
 
   const disable = () => {
