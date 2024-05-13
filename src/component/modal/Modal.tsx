@@ -1,6 +1,8 @@
 'use client'
 
 import React from 'react'
+import powerpuff from '../../../public/Powerpuff.png'
+import Image from 'next/image'
 
 interface Props {
   showModal: boolean
@@ -21,7 +23,10 @@ const Modal = ({ showModal, handleRestart, moves, bestScore }: Props) => {
         className={'absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex'}
         onClick={(event) => event.stopPropagation()}
       >
-        <div className='w-[327px] rounded-xl border border-white bg-sb60 px-md py-lg text-center h-44 p-2 bg-slate-50 justify-center'>
+        <div className='absolute h-full w-48 left-1/2 -translate-x-1/2 top-1/2 -translate-y-48'>
+          <Image src={powerpuff} alt='powerpuff' sizes='(min-width: 768px) 100vw, 50vw, 33vw' />
+        </div>
+        <div className='w-[327px] rounded-xl border border-white bg-sb60 px-md py-lg text-center h-44 p-2 bg-slate-50 justify-center z-10'>
           <div className='text-base font-semibold m-2'>Hurray!!! You completed the challenge</div>
           <div className='whitespace-break-spaces text-body2 font-medium'>
             You completed the game in {moves} moves. Your best score is {bestScore} moves.

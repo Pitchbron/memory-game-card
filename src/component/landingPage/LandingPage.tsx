@@ -39,7 +39,7 @@ const LandingPage = () => {
     window.localStorage.getItem('bestScore') || Number.POSITIVE_INFINITY
   )
 
-  const timeout = useRef<ReturnType<typeof setInterval> | any>(null)
+  const timeout = useRef<ReturnType<typeof setInterval> | undefined>(undefined)
 
   const disable = () => {
     setShouldDisableAllCards(true)
@@ -73,7 +73,7 @@ const LandingPage = () => {
   }
 
   useEffect(() => {
-    let timeout: any = null
+    let timeout: ReturnType<typeof setInterval> | undefined = undefined
     if (openCards.length === 2) {
       timeout = setTimeout(evaluate, 300)
     }
@@ -135,7 +135,8 @@ const LandingPage = () => {
                   Move Count : {moves}
                 </div>
                 <div className='font-bold text-xl text-violet-600 px-4 sm:px-0 sm:text-lg'>
-                  Your Best Score : {bestScore === Infinity ? ' - ' : bestScore}
+                  Your Best Score :{' '}
+                  {bestScore === Infinity || bestScore === 'Infinity' ? ' - ' : bestScore}
                 </div>
                 <div className='font-bold text-xl text-blue-600 px-4 sm:px-0 sm:text-lg'>
                   Global Score : {globalScore}

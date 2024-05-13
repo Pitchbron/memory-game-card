@@ -26,7 +26,7 @@ const Card = ({ onClick, card, index, isInactive, isFlipped, isDisabled }: Props
       onClick={!isInactive ? handleClick : undefined}
     >
       <div className={'absolute w-24 h-36 backface-hidden'}>
-        <Image src={Blossom3} alt='eggplant' sizes='(min-width: 768px) 100vw, 50vw, 33vw' />
+        <Image src={Blossom3} alt='blossom3' sizes='(min-width: 768px) 100vw, 50vw, 33vw' />
       </div>
       <div className={'absolute w-24 h-36 rotate-y-180 backface-hidden bg-pink-600'}>
         <div
